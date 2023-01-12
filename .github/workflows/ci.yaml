@@ -111,6 +111,12 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
           tools: tests
 
+      - name: Build static toolchain to incrementally build cachix cache
+        run: |
+          nix-build -A packagesStatic.hello
+          nix-env -f default.nix -iA devTools.pushCachix
+          postgrest-push-cachix
+
       - name: Build static executable
         run: nix-build -A postgrestStatic
       - name: Check static executable
