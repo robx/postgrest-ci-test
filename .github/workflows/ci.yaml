@@ -1,17 +1,5 @@
 name: CI
 
-on:
-  push:
-    branches:
-      - main
-      - rel-*
-    tags:
-      - v*
-  pull_request:
-    branches:
-      - main
-      - rel-*
-
 jobs:
   Lint-Style:
     name: Lint & check code style
