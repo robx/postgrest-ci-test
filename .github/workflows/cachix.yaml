@@ -1,0 +1,54 @@
+name: Seed Cachix
+
+on:
+  push:
+    branches:
+      - main
+      - rel-*
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - main
+      - rel-*
+
+jobs:
+  Seed-Cachix-Linux:
+    name: Seed Cachix on Linux (including static)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Nix Environment
+        uses: ./.github/actions/setup-nix
+        with:
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+
+      - name: Install cachix tooling
+        run: |
+          nix-env -f default.nix -iA devTools.pushCachix
+          postgrest-push-cachix
+
+      - name: Seed dynamic postgrest build
+        run: |
+          nix-build -A postgrestPackage
+          postgrest-push-cachix
+
+      - name: Seed style tools
+        run: |
+          nix-build -A style
+          postgrest-push-cachix
+
+      - name: Seed test tools
+        run: |
+          nix-build -A tests
+          postgrest-push-cachix
+
+      - name: Seed static toolchain
+        run: |
+          nix-build -A packagesStatic.hello
+          postgrest-push-cachix
+
+      - name: Seed static postgrest build
+        run: |
+          nix-build -A postgrestStatic
+          postgrest-push-cachix
