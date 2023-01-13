@@ -162,7 +162,7 @@ rec {
 
   withTools =
     pkgs.callPackage nix/tools/withTools.nix { inherit devCabalOptions postgresqlVersions postgrest; };
-} // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux rec {
+
   # Static executable.
   inherit postgrestStatic;
   inherit packagesStatic;
