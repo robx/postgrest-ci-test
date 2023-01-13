@@ -90,15 +90,28 @@ let
     );
 
   inherit (pkgs.haskell) lib;
-in
-rec {
-  inherit nixpkgs pkgs rawpkgs;
 
-  # Derivation for the PostgREST Haskell package, including the executable,
-  # libraries and documentation. We disable running the test suite on Nix
-  # builds, as they require a database to be set up.
-  postgrestPackage =
-    lib.dontCheck postgrest;
+  # Tooling for analyzing Haskell imports and exports.
+  hsie =
+    pkgs.callPackage nix/hsie {
+      inherit (pkgs.haskell.packages."${compiler}") ghcWithPackages;
+    };
+
+  withTools =
+    pkgs.callPackage nix/tools/withTools.nix { inherit devCabalOptions postgresqlVersions postgrest; };
+
+  # Scripts for running tests.
+  tests =
+    pkgs.callPackage nix/tools/tests.nix {
+      inherit postgrest devCabalOptions withTools;
+      ghc = pkgs.haskell.compiler."${compiler}";
+      inherit (pkgs.haskell.packages."${compiler}") hpc-codecov;
+      inherit (pkgs.haskell.packages."${compiler}") weeder;
+    };
+
+  # Linting and styling tools.
+  style =
+    pkgs.callPackage nix/tools/style.nix { inherit hsie; };
 
   # Profiled dynamic executable.
   postgrestProfiled =
@@ -108,13 +121,22 @@ rec {
       )
     );
 
+in {
+  inherit nixpkgs pkgs rawpkgs;
+
+  inherit tests withTools style;
+
+  # Derivation for the PostgREST Haskell package, including the executable,
+  # libraries and documentation. We disable running the test suite on Nix
+  # builds, as they require a database to be set up.
+  postgrestPackage =
+    lib.dontCheck postgrest;
+
   inherit (postgrest) env;
 
-  # Tooling for analyzing Haskell imports and exports.
-  hsie =
-    pkgs.callPackage nix/hsie {
-      inherit (pkgs.haskell.packages."${compiler}") ghcWithPackages;
-    };
+  inherit postgrestProfiled;
+
+  inherit hsie;
 
   ### Tools
 
@@ -144,22 +166,6 @@ rec {
   # Scripts for publishing new releases.
   release =
     pkgs.callPackage nix/tools/release { };
-
-  # Linting and styling tools.
-  style =
-    pkgs.callPackage nix/tools/style.nix { inherit hsie; };
-
-  # Scripts for running tests.
-  tests =
-    pkgs.callPackage nix/tools/tests.nix {
-      inherit postgrest devCabalOptions withTools;
-      ghc = pkgs.haskell.compiler."${compiler}";
-      inherit (pkgs.haskell.packages."${compiler}") hpc-codecov;
-      inherit (pkgs.haskell.packages."${compiler}") weeder;
-    };
-
-  withTools =
-    pkgs.callPackage nix/tools/withTools.nix { inherit devCabalOptions postgresqlVersions postgrest; };
 
   # Static executable.
   inherit postgrestStatic;
