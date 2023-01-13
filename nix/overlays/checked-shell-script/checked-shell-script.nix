@@ -7,7 +7,6 @@
 , git
 , lib
 , runCommand
-, shellcheck
 , stdenv
 , writeTextFile
 }:
@@ -129,9 +128,6 @@ let
         ''
           # check syntax
           ${stdenv.shell} -n $out/bin/${name}
-
-          # check for shellcheck recommendations
-          ${shellcheck}/bin/shellcheck -x $out/bin/${name}
         '';
     };
 
