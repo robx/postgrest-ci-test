@@ -1,23 +1,29 @@
-{ checkedShellScript
+{ bash
+, runCommand
+, stdenv
+, writeTextFile
 }:
 let
-  pushCachix =
-    checkedShellScript
-      {
-        name = "postgrest-push-cachix";
-        docs = ''
-          Push all build artifacts to cachix.
+  name = "postgrest-push-cachix";
+  bin =
+    writeTextFile {
+      inherit name;
+      executable = true;
+      destination = "/bin/${name}";
 
-          Requires authentication with `cachix authtoken ...`.
+      text =
+        ''
+          #!${bash}/bin/bash
+          set -euo pipefail
+          nix-instantiate \
+            | while read -r drv; do
+                nix-store -qR --include-outputs "$drv"
+              done \
+            | cachix push postgrest
         '';
-        inRootDir = true;
-      }
-      ''
-        nix-instantiate \
-          | while read -r drv; do
-              nix-store -qR --include-outputs "$drv"
-            done \
-          | cachix push postgrest
-      '';
+    };
+
+  script =
+    runCommand name { inherit bin name; } "ln -s $bin/bin/$name $out";
 in
-pushCachix
+script // { inherit bin; }
