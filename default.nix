@@ -128,6 +128,8 @@ rec {
     pkgs.callPackage nix/tools/devTools.nix { inherit tests style devCabalOptions hsie withTools; };
   cachixTools =
     pkgs.callPackage nix/tools/cachixTools.nix { };
+  cachixToolsRaw =
+    rawpkgs.callPackage nix/tools/cachixTools.nix { };
 
   # Load testing tools.
   loadtest =

@@ -23,6 +23,11 @@ jobs:
         with:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
+      - name: Install cachix tooling (raw nixpkgs)
+        run: |
+          nix-env -f default.nix -iA cachixToolsRaw.bin
+          postgrest-push-cachix
+
       - name: Install cachix tooling
         run: |
           nix-env -f default.nix -iA cachixTools.bin
