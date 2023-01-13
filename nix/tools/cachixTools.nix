@@ -1,6 +1,5 @@
 { buildToolbox
 , checkedShellScript
-, nix
 }:
 let
   pushCachix =
@@ -15,9 +14,9 @@ let
         inRootDir = true;
       }
       ''
-        ${nix}/bin/nix-instantiate \
+        nix-instantiate \
           | while read -r drv; do
-              ${nix}/bin/nix-store -qR --include-outputs "$drv"
+              nix-store -qR --include-outputs "$drv"
             done \
           | cachix push postgrest
       '';
