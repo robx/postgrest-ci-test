@@ -164,7 +164,4 @@ rec {
   # Static executable.
   inherit postgrestStatic;
 
-  # Docker images and loading script.
-  docker =
-    pkgs.callPackage nix/tools/docker { postgrest = postgrestStatic; };
 }
