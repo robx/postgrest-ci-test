@@ -23,9 +23,9 @@ jobs:
         with:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - name: Update nix
+      - name: nix info
         run: |
-          nix-env -f default.nix -iA pkgs.nix
+          nix --version
 
       - name: Install cachix tooling (raw nixpkgs)
         run: |
