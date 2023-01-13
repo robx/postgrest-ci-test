@@ -160,4 +160,8 @@ rec {
 
   withTools =
     pkgs.callPackage nix/tools/withTools.nix { inherit devCabalOptions postgresqlVersions postgrest; };
+
+  # Static executable.
+  inherit postgrestStatic;
+
 }
