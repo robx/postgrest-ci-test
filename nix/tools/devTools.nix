@@ -1,6 +1,5 @@
 { buildToolbox
 , cabal-install
-, cachix
 , checkedShellScript
 , devCabalOptions
 , entr
@@ -58,7 +57,7 @@ let
           | while read -r drv; do
               ${nix}/bin/nix-store -qR --include-outputs "$drv"
             done \
-          | ${cachix}/bin/cachix push postgrest
+          | cachix push postgrest
       '';
 
   check =
