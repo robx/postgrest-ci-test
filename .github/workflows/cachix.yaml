@@ -23,6 +23,9 @@ jobs:
         with:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
+      - run: nix-env -f default.nix -iA rawpkgs.shellcheck
+      - run: nix-env -f default.nix -iA pkgs.shellcheck
+
       - name: Install cachix tooling
         run: |
           nix-env -f default.nix -iA devTools.pushCachix.bin

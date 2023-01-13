@@ -46,6 +46,8 @@ let
   # Evaluated expression of the Nixpkgs repository.
   pkgs =
     import nixpkgs { inherit overlays system; };
+  rawpkgs =
+    import nixpkgs { inherit system; };
 
   postgresqlVersions =
     [
@@ -92,7 +94,7 @@ let
   inherit (pkgs.haskell) lib;
 in
 rec {
-  inherit nixpkgs pkgs;
+  inherit nixpkgs pkgs rawpkgs;
 
   # Derivation for the PostgREST Haskell package, including the executable,
   # libraries and documentation. We disable running the test suite on Nix
