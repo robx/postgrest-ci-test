@@ -1,5 +1,4 @@
-{ buildToolbox
-, checkedShellScript
+{ checkedShellScript
 }:
 let
   pushCachix =
@@ -21,11 +20,4 @@ let
           | cachix push postgrest
       '';
 in
-buildToolbox
-{
-  name = "postgrest-cachix";
-  tools = [
-    pushCachix
-  ];
-  extra = { inherit pushCachix; };
-}
+pushCachix
