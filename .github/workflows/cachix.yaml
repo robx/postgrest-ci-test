@@ -23,13 +23,9 @@ jobs:
         with:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
 
-      - run: nix-env -f default.nix -iA rawpkgs.shellcheck
-      - run: nix-env -f default.nix -iA pkgs.shellcheck
-      - run: nix-env -f default.nix -iA withTools.withGit.bin
-
       - name: Install cachix tooling
         run: |
-          nix-env -f default.nix -iA devTools.pushCachix.bin
+          nix-env -f default.nix -iA cachixTools.pushCachix.bin
           postgrest-push-cachix
 
       - name: Seed dynamic postgrest build
