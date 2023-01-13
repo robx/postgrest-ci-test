@@ -36,28 +36,3 @@ jobs:
         run: |
           nix-env -f default.nix -iA cachixTools.bin
           postgrest-push-cachix
-
-      - name: Seed dynamic postgrest build
-        run: |
-          nix-build -A postgrestPackage
-          postgrest-push-cachix
-
-      - name: Seed style tools
-        run: |
-          nix-build -A style
-          postgrest-push-cachix
-
-      - name: Seed test tools
-        run: |
-          nix-build -A tests
-          postgrest-push-cachix
-
-      - name: Seed static toolchain
-        run: |
-          nix-build -A packagesStatic.hello
-          postgrest-push-cachix
-
-      - name: Seed static postgrest build
-        run: |
-          nix-build -A postgrestStatic
-          postgrest-push-cachix
