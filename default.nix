@@ -47,7 +47,7 @@ let
   pkgs =
     import nixpkgs { inherit overlays system; };
   rawpkgs =
-    import nixpkgs { inherit system; };
+    import nixpkgs { overlays = [allOverlays.checked-shell-script]; inherit system; };
 
   postgresqlVersions =
     [
