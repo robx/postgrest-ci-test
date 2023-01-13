@@ -76,8 +76,6 @@ let
   postgrestStatic =
     lib.justStaticExecutables (lib.dontCheck (staticHaskellPackage name src).package);
 
-  packagesStatic = (staticHaskellPackage name src).survey;
-
   # Options passed to cabal in dev tools and tests
   devCabalOptions =
     "-f dev --test-show-detail=direct";
@@ -165,7 +163,6 @@ rec {
 
   # Static executable.
   inherit postgrestStatic;
-  inherit packagesStatic;
 
   # Docker images and loading script.
   docker =
